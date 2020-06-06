@@ -1,44 +1,75 @@
-let defaultResult = 0;
-currentResult = defaultResult;
+const defaultResult = 0;
+let currentResult = defaultResult;
+let logEntries = [];
 
-function add () {
-let enteredNumber = parseInt(userInput.value);
-let calcDescription =  currentResult + "+" +  enteredNumber;
- //let calcDescription = `${currentResult} + ${enteredNumber}`  // result is the same like above
- currentResult = currentResult + enteredNumber;
- outputResult(currentResult, calcDescription);
+// Gets input from input field
+function getUserNumberInput() {
+  return parseInt(usrInput.value);
 }
 
-function subtract(){
-let enteredNumber = parseInt(userInput.value);
-let calcDescription =  currentResult + "-" +  enteredNumber;
-//let calcDescription = `${currentResult} - ${enteredNumber}`  // result is the same like above
-currentResult = currentResult - enteredNumber;
-outputResult(currentResult, calcDescription);
+// Generates and writes calculation log
+function createAndWriteOutput(operator, resultBeforeCalc, calcNumber) {
+  const calcDescription = `${resultBeforeCalc} ${operator} ${calcNumber}`;
+  outputResult(currentResult, calcDescription); // from vendor file
 }
 
-function multiply(){
-    let enteredNumber = parseInt(userInput.value);
-    let calcDescription =  currentResult + "*" +  enteredNumber;
-    //let calcDescription = `${currentResult} * ${enteredNumber}`  // result is the same like above
-    currentResult = currentResult * enteredNumber;
-    outputResult(currentResult, calcDescription);
-
-}
-
-function divide(){
-    let enteredNumber = parseInt(userInput.value);
-    let calcDescription =  currentResult + "/" +  enteredNumber;
-    //let calcDescription = `${currentResult} / ${enteredNumber}`  // result is the same like above
-    currentResult = currentResult / enteredNumber;
-    outputResult(currentResult, calcDescription);
+function writeToLog(
+  operationIdentifier,
+  prevResult,
+  operationNumber,
+  newResult
+) {
+  const logEntry = {
+    operation: operationIdentifier,
+    prevResult: prevResult,
+    number: operationNumber,
+    result: newResult
+  };
+  logEntries.push(logEntry);
+  console.log(logEntries);
 }
 
 
-addBtn.addEventListener("click", add);
-subtractBtn.addEventListener("click", subtract);
-multiplyBtn.addEventListener("click", multiply);
-divideBtn.addEventListener("click", divide);
+function calculateResult(calculationType){
+    const enteredNumber = getUserNumberInput();
+    const initialResult = currentResult;
+    let mathOperator;
+    if(calculationType==="ADD"){
+    currentResult += enteredNumber;
+    mathOperator = "+";
+    }else if (calculationType === "SUBTRACT") {
+        currentResult -= enteredNumber;
+        mathOperator = "-";
+    }else if (calculationType === "MULTIPLAY"){
+        currentResult *= enteredNumber;
+        mathOperator = "*";
+    } else if (calculationType === "DIVIDE"){
+        currentResult /= enteredNumber;
+        mathOperator = "/";
+    }
+    
+    createAndWriteOutput(mathOperator, initialResult, enteredNumber);
+    writeToLog(calculationType, initialResult, enteredNumber, currentResult);
+}
 
 
+function add() {
+  calculateResult("ADD");
+}
 
+function subtract() {
+  calculateResult("SUBTRACT");
+}
+
+function multiply() {
+    calculateResult("MULTIPLAY");
+}
+
+function divide() {
+    calculateResult("DIVIDE");
+}
+
+addBtn.addEventListener('click', add);
+subtractBtn.addEventListener('click', subtract);
+multiplyBtn.addEventListener('click', multiply);
+divideBtn.addEventListener('click', divide);
